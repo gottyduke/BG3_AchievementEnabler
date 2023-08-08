@@ -13,7 +13,7 @@ include(GNUInstallDirs)
 # info
 project(
 	BG3AchievementEnabler
-	VERSION 1.0.0
+	VERSION 1.1.0
 	LANGUAGES CXX
 )
 

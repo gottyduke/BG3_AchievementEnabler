@@ -17,8 +17,7 @@ namespace
 			"48 81 C1 D0 00 00 00 "
 			"E8 ?? ?? ?? ?? "
 			"48 8B C8 "
-			"E8 ?? ?? ?? ?? "
-			"84 C0">();
+			"E8 ?? ?? ?? ??">();
 		auto* patch = dku::Hook::adjust_pointer(entry, 0x24);
 
 		if (entry && TestAlByte.match(AsAddress(patch))) {
@@ -44,8 +43,7 @@ namespace
 			"48 81 C1 D0 00 00 00 "
 			"E8 ?? ?? ?? ?? "
 			"48 8B C8 "
-			"E8 ?? ?? ?? ?? "
-			"84 C0">();
+			"E8 ?? ?? ?? ??">();
 		auto patch = AsAddress(dku::Hook::adjust_pointer(entry, 0x41));
 
 		if (entry && TestAlByte.match(patch)) {
