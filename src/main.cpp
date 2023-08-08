@@ -21,7 +21,7 @@ namespace
 
 		if (entry && dku::Hook::Assembly::make_pattern<"74 ??">().match(AsAddress(patch))) {
 			dku::Hook::WriteImm(patch, static_cast<dku::Hook::Imm8>(0xEB));
-			INFO("patch 1 committed: {:X}", AsAddress(patch));
+			INFO("patch 1 committed : {:X}", AsAddress(patch));
 		}
 	}
 
@@ -48,7 +48,7 @@ namespace
 
 		if (entry && dku::Hook::Assembly::make_pattern<"75 ??">().match(AsAddress(patch))) {
 			dku::Hook::WriteImm(patch, static_cast<dku::Hook::Imm16>(0x9090));
-			INFO("patch 2 committed: {:X}", AsAddress(patch));
+			INFO("patch 2 committed : {:X}", AsAddress(patch));
 		}
 	}
 }
