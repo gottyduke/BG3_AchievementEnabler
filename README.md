@@ -63,9 +63,12 @@ cd BG3_AchievementEnabler
 
 ## 构建
 
+```
 git clone https://github.com/gottyduke/BG3_AchievementEnabler.git
 cd BG3_AchievementEnabler
 .\build-release.ps1
+```
+
 ## 许可
 
 [MIT](LICENSE)
