@@ -1,5 +1,5 @@
 # BG3_AchievementEnabler
- Enables steam achievement for Baldur's Gate 3 with mods enabled.
+ Enables steam & GOG achievement for Baldur's Gate 3 with mods enabled.
 
 ## Requirements
 
@@ -41,7 +41,7 @@ cd BG3_AchievementEnabler
 
 
 # BG3_AchievementEnabler
- 启用带有模组的《博德之门3》的Steam成就。
+ 启用带有模组的《博德之门3》的Steam和GOG成就。
 
 ## 需求
 
