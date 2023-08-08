@@ -1,0 +1,9 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+    "name": "bg3ae",
+    "version-string": "1.0.0",
+    "description": "plugin for BG3 to enable achievements in modded stories",
+    "dependencies": [
+        "spdlog"
+    ]
+}
