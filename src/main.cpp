@@ -6,7 +6,6 @@ namespace
 	static constexpr auto TestAlByte = dku::Hook::Assembly::make_pattern<"84 C0">();
 	constexpr dku::Hook::OpCode Xor = 0x33;
 
-
 	// 4.1.1.3624901
 	void Patch1_Commit()
 	{
@@ -27,7 +26,6 @@ namespace
 			INFO("patch 1 committed : {:X}", AsAddress(patch));
 		}
 	}
-
 
 	void Patch2_Commit()
 	{
@@ -55,7 +53,6 @@ namespace
 			INFO("patch 2 committed : {:X}", patch);
 		}
 	}
-
 
 	void Patch3_Commit()
 	{
