@@ -1,8 +1,6 @@
 #pragma once
 
-
 #include "shared.hpp"
-
 
 namespace DKUtil::Config::detail
 {
@@ -15,7 +13,6 @@ namespace DKUtil::Config::detail
 
 		kError,
 	};
-
 
 	template <typename data_t>
 	struct data_trait
@@ -41,7 +38,6 @@ namespace DKUtil::Config::detail
 	template <typename data_t>
 	static constexpr auto data_trait_v = data_trait<data_t>::value();
 
-
 	class IData
 	{
 	public:
@@ -59,7 +55,6 @@ namespace DKUtil::Config::detail
 		DataType _type;
 	};
 
-
 	// automatic data with collection enabled
 	template <
 		typename data_t,
@@ -74,7 +69,6 @@ namespace DKUtil::Config::detail
 		constexpr AData(const std::string& a_key, const std::string& a_section = "") :
 			IData(TYPE), _key(std::move(a_key)), _section(std::move(a_section))
 		{}
-
 
 		constexpr AData(const AData&) noexcept = delete;
 		constexpr AData(AData&&) noexcept = delete;
@@ -187,7 +181,6 @@ namespace DKUtil::Config::detail
 			}
 		}
 
-
 	private:
 		const std::string _key;
 		const std::string _section;
@@ -197,13 +190,11 @@ namespace DKUtil::Config::detail
 		std::unique_ptr<collection> _collection{ nullptr };
 	};
 
-
 	template <typename data_t>
 	auto* IData::As()
 	{
 		return dynamic_cast<AData<data_t>*>(this);
 	}
-
 
 	extern template class AData<bool>;
 	extern template class AData<std::int64_t>;

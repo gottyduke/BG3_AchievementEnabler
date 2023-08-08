@@ -112,5 +112,5 @@ using namespace std::literals;
 
 // DKUtil
 #define PLUGIN_MODE
-#include "DKUtil/Logger.hpp"
 #include "DKUtil/Hook.hpp"
+#include "DKUtil/Logger.hpp"

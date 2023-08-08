@@ -1,8 +1,6 @@
 #pragma once
 
-
 #include "shared.hpp"
-
 
 namespace DKUtil::Hook::Trampoline
 {
@@ -22,7 +20,7 @@ namespace DKUtil::Hook::Trampoline
 			}
 
 			std::uintptr_t min, max, addr, add = static_cast<uintptr_t>(dwAllocationGranularity) - 1, mask = ~add;
-			
+
 			if (!a_from) {
 				const auto textx = Module::get().section(Module::Section::textx);
 				a_from = textx.first + textx.second / 2;
@@ -105,15 +103,13 @@ namespace DKUtil::Hook::Trampoline
 		std::size_t _used{ 0 };
 	};
 
-	
 	inline Trampoline& GetTrampoline() noexcept
 	{
 		static Trampoline trampoline;
 		return trampoline;
 	}
 
-
-	inline Trampoline& AllocTrampoline(std::size_t a_size) 
+	inline Trampoline& AllocTrampoline(std::size_t a_size)
 	{
 		auto& trampoline = GetTrampoline();
 		trampoline.release();

@@ -1,10 +1,8 @@
 #pragma once
 
-
 #include "data.hpp"
 
 #include "nlohmann/json.hpp"
-
 
 namespace DKUtil::Config::detail
 {

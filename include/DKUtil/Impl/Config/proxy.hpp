@@ -1,8 +1,6 @@
 #pragma once
 
-
 #include "shared.hpp"
-
 
 #define __eval_helper(SRC) DKUtil::Config::EvaluateConfig([]() { return SRC; })
 // compile-time evaluation
@@ -11,7 +9,6 @@
 #define RUNTIME_PROXY(SRC) DKUtil::Config::Proxy<DKUtil::Config::FileType::kDynamic>(SRC)
 // schema configs
 #define SCHEMA_PROXY(SRC) DKUtil::Config::Proxy<DKUtil::Config::FileType::kSchema>(SRC)
-
 
 namespace DKUtil::Config
 {
@@ -25,7 +22,6 @@ namespace DKUtil::Config
 
 		kError
 	};
-
 
 	// compile-time file type evaluation from literal/literal view
 	template <typename input_string_t>
@@ -58,7 +54,6 @@ namespace DKUtil::Config
 
 		return FileType::kError;
 	}
-
 
 	template <const FileType ConfigFileType>
 		requires(ConfigFileType != FileType::kError)
@@ -103,7 +98,6 @@ namespace DKUtil::Config
 			DEBUG("DKU_C: Proxy#{}: Runtime -> {}", _id, _filename);
 		}
 
-
 		Proxy() = default;
 		Proxy(const Proxy&) = delete;
 		Proxy(Proxy&&) = default;
@@ -111,7 +105,6 @@ namespace DKUtil::Config
 
 		Proxy& operator=(const Proxy&) = delete;
 		Proxy& operator=(Proxy&&) = default;
-
 
 		void Load(const char* a_data = nullptr) noexcept
 		{
@@ -139,7 +132,6 @@ namespace DKUtil::Config
 			a_data.set_range({ min, max });
 			a_data.set_data({ static_cast<data_t>(a_value)... });
 		}
-
 
 		[[nodiscard]] constexpr auto get_id() const noexcept { return _id; }
 		[[nodiscard]] constexpr auto get_filename() const noexcept { return _filename; }

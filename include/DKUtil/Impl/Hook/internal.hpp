@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "assembly.hpp"
 #include "jit.hpp"
 #include "trampoline.hpp"
@@ -31,7 +30,6 @@
 #	define PAGE_ALLOC(SIZE) Trampoline::AllocTrampoline((SIZE))
 #endif
 
-
 namespace DKUtil::Hook
 {
 	using namespace Assembly;
@@ -41,15 +39,12 @@ namespace DKUtil::Hook
 	public:
 		virtual ~HookHandle() = default;
 
-
 		virtual void Enable() noexcept = 0;
 		virtual void Disable() noexcept = 0;
-
 
 		const std::uintptr_t Address;
 		const std::uintptr_t TramEntry;
 		std::uintptr_t TramPtr{ 0x0 };
-
 
 		template <std::derived_from<HookHandle> derived_t>
 		constexpr derived_t* As() noexcept
@@ -62,7 +57,6 @@ namespace DKUtil::Hook
 			Address(a_address), TramEntry(a_tramEntry), TramPtr(a_tramEntry)
 		{}
 	};
-
 
 	class ASMPatchHandle : public HookHandle
 	{
@@ -80,13 +74,11 @@ namespace DKUtil::Hook
 			DEBUG("DKU_H: Patch capacity: {} bytes\nPatch entry @ {:X}", PatchSize, TramEntry);
 		}
 
-
 		void Enable() noexcept override
 		{
 			WriteData(TramEntry, PatchBuf, PatchSize, false);
 			DEBUG("DKU_H: Enabled ASM patch");
 		}
-
 
 		void Disable() noexcept override
 		{
@@ -94,14 +86,12 @@ namespace DKUtil::Hook
 			DEBUG("DKU_H: Disabled ASM patch");
 		}
 
-
 		const offset_pair Offset;
 		const std::size_t PatchSize;
 
 		OpCode OldBytes[CAVE_BUF_SIZE]{};
 		OpCode PatchBuf[CAVE_BUF_SIZE]{};
 	};
-
 
 	/* Apply assembly patch in the body of execution
 	 * @param a_address : Memory address of the BEGINNING of target function
@@ -184,7 +174,6 @@ namespace DKUtil::Hook
 				CaveSize, CaveEntry, TramEntry);
 		}
 
-
 		void Enable() noexcept override
 		{
 			WriteData(CavePtr, CaveBuf, CaveSize, false);
@@ -192,14 +181,12 @@ namespace DKUtil::Hook
 			DEBUG("DKU_H: Enabled cave hook");
 		}
 
-
 		void Disable() noexcept override
 		{
 			WriteData(CavePtr - CaveSize, OldBytes, CaveSize, false);
 			CavePtr -= CaveSize;
 			DEBUG("DKU_H: Disabled cave hook");
 		}
-
 
 		const offset_pair Offset;
 		const std::size_t CaveSize;
@@ -210,7 +197,6 @@ namespace DKUtil::Hook
 		OpCode OldBytes[CAVE_BUF_SIZE]{};
 		OpCode CaveBuf[CAVE_BUF_SIZE]{};
 	};
-
 
 	/* Branch to hook function in the body of execution from target function.
 	 * If stack manipulation is involved in epilog patch, add stack offset (sizeof(std::uintptr_t) * (target function argument(s) count))
@@ -350,13 +336,11 @@ namespace DKUtil::Hook
 			DEBUG("DKU_H: VMT @ {:X} [{}]\nOld entry @ {:X} | New entry @ {:X}", a_address, a_index, OldAddress, TramEntry);
 		}
 
-
 		void Enable() noexcept override
 		{
 			WriteImm(Address, TramEntry, false);
 			DEBUG("DKU_H: Enabled VMT hook");
 		}
-
 
 		void Disable() noexcept override
 		{
@@ -364,10 +348,8 @@ namespace DKUtil::Hook
 			DEBUG("DKU_H: Disabled VMT hook");
 		}
 
-
 		const std::uintptr_t OldAddress;
 	};
-
 
 	/* Swaps a virtual method table function with target function
 	 * @param a_vtbl : Pointer to virtual method table
@@ -432,13 +414,11 @@ namespace DKUtil::Hook
 				a_address, a_importName, OldAddress, a_funcName, PROJECT_NAME, a_tramEntry);
 		}
 
-
 		void Enable() noexcept override
 		{
 			WriteImm(Address, TramEntry, false);
 			DEBUG("DKU_H: Enabled IAT hook");
 		}
-
 
 		void Disable() noexcept override
 		{
@@ -446,10 +426,8 @@ namespace DKUtil::Hook
 			DEBUG("DKU_H: Disabled IAT hook");
 		}
 
-
 		const std::uintptr_t OldAddress;
 	};
-
 
 	/* Swaps a import address table method with target function
 	 * @param a_moduleName : Name of the target module that import address table resides

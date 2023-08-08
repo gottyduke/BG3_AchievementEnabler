@@ -1,10 +1,8 @@
 #pragma once
 
-
 #include "data.hpp"
 
 #include "SimpleIni.h"
-
 
 namespace DKUtil::Config::detail
 {
@@ -148,7 +146,6 @@ namespace DKUtil::Config::detail
 		{
 			ERROR("DKU_C: Parser#{}: {}\nValue type mismatch!\nFile: {}\nKey: {}, Expected: {}, Value: {}", _id, a_what, _filepath.c_str(), a_key, a_type, a_value);
 		}
-
 
 		CSimpleIniA _ini;
 		char errmsg[72];

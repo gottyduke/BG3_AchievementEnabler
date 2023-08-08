@@ -1,8 +1,6 @@
 #pragma once
 
-
 #include "shared.hpp"
-
 
 namespace DKUtil::Hook::Assembly
 {
@@ -59,7 +57,6 @@ namespace DKUtil::Hook::Assembly
 	};
 	static_assert(sizeof(JmpRel) == 0x5);
 
-
 	template <bool RETN = false>
 	struct JmpRip
 	{
@@ -76,7 +73,6 @@ namespace DKUtil::Hook::Assembly
 	static_assert(sizeof(JmpRip<true>) == 0x6);
 	static_assert(sizeof(JmpRip<false>) == 0x6);
 	using CallRip = JmpRip<true>;
-
 
 	struct PushImm64
 	{
@@ -98,7 +94,6 @@ namespace DKUtil::Hook::Assembly
 	};
 	static_assert(sizeof(PushImm64) == 0xD);
 
-
 	template <bool ADD = false>
 	struct SubRsp
 	{
@@ -116,7 +111,6 @@ namespace DKUtil::Hook::Assembly
 	static_assert(sizeof(SubRsp<true>) == 0x4);
 	static_assert(sizeof(SubRsp<false>) == 0x4);
 	using AddRsp = SubRsp<true>;
-
 
 	template <bool POP = false>
 	struct PushR64
@@ -143,7 +137,6 @@ namespace DKUtil::Hook::Assembly
 
 	using PopR64 = PushR64<true>;
 	static_assert(sizeof(PopR64) == 0x1);
-
 
 	template <bool POP = false>
 	struct PushR64W
@@ -172,9 +165,7 @@ namespace DKUtil::Hook::Assembly
 	using PopR64W = PushR64W<true>;
 	static_assert(sizeof(PopR64W) == 0x2);
 
-
 #pragma pack(pop)
-
 
 	namespace pattern
 	{
@@ -342,7 +333,6 @@ namespace DKUtil::Hook::Assembly
 	static_assert(make_pattern<"B8 D0 ?? ?? D4 6E">().match(
 		pattern::make_byte_array(0xB8, 0xD0, 0x35, 0x2A, 0xD4, 0x6E)));
 
-	
 	template <pattern::PatternMatcher P>
 	[[nodiscard]] inline void* search_pattern(std::uintptr_t a_base = 0, std::size_t a_size = 0) noexcept
 	{

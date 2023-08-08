@@ -1,6 +1,5 @@
 #pragma once
 
-
 /*
  * 1.2.3
  * Preceded ERROR logging macro;
@@ -25,19 +24,15 @@
  *
  */
 
-
 #include "Impl/pch.hpp"
-
 
 #define DKU_L_VERSION_MAJOR 1
 #define DKU_L_VERSION_MINOR 2
 #define DKU_L_VERSION_REVISION 2
 
-
 #ifndef PROJECT_NAME
 #	define PROJECT_NAME Plugin::NAME.data()
 #endif
-
 
 #ifndef DKU_DISABLE_LOGGING
 
@@ -48,7 +43,6 @@
 #	endif
 
 #	include <spdlog/spdlog.h>
-
 
 #	define __LOG(LEVEL, ...)                                                                       \
 		{                                                                                           \
@@ -112,12 +106,10 @@
 
 #endif
 
-
 namespace DKUtil
 {
 	constexpr auto DKU_L_VERSION = DKU_L_VERSION_MAJOR * 10000 + DKU_L_VERSION_MINOR * 100 + DKU_L_VERSION_REVISION;
 }  // namespace DKUtil
-
 
 namespace DKUtil::Logger
 {
@@ -151,12 +143,10 @@ namespace DKUtil::Logger
 			return (!knownPath || result != S_OK) ? std::filesystem::path{} : std::filesystem::path{ knownPath.get() };
 		}
 
-
 		inline spdlog::source_loc make_current(std::source_location a_loc) noexcept
 		{
 			return spdlog::source_loc{ a_loc.file_name(), static_cast<int>(a_loc.line()), a_loc.function_name() };
 		}
-
 
 		inline void report_outdated(std::string_view a_fmt)
 		{
@@ -165,7 +155,6 @@ namespace DKUtil::Logger
 				::TerminateProcess(::GetCurrentProcess(), 'FAIL');
 			}
 		}
-
 
 		inline void report_error(bool a_fatal, std::string_view a_fmt)  // noexcept
 		{
@@ -181,7 +170,6 @@ namespace DKUtil::Logger
 			::TerminateProcess(::GetCurrentProcess(), 'FAIL');
 		}
 	}  // namespace detail
-
 
 	inline void Init(const std::string_view a_name, const std::string_view a_version) noexcept
 	{
@@ -234,12 +222,10 @@ namespace DKUtil::Logger
 #endif
 	}
 
-
 	inline void SetLevel(const spdlog::level::level_enum a_level) noexcept
 	{
 		spdlog::default_logger()->set_level(a_level);
 	}
-
 
 	inline void EnableDebug(bool a_enable = true) noexcept
 	{

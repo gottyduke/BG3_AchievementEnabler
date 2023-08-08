@@ -1,11 +1,9 @@
 #pragma once
 
-
 #include "assembly.hpp"
 #include "internal.hpp"
 #include "shared.hpp"
 #include "trampoline.hpp"
-
 
 namespace DKUtil::Hook
 {

@@ -1,8 +1,6 @@
 #pragma once
 
-
 #include "assembly.hpp"
-
 
 #define FUNC_INFO(FUNC)                               \
 	DKUtil::Hook::FuncInfo                            \
@@ -14,7 +12,6 @@
 	{                       \
 		FUNC, NAME          \
 	}
-
 
 namespace DKUtil::Hook
 {

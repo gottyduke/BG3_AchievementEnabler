@@ -1,14 +1,11 @@
 #pragma once
 
-
 #include "DKUtil/Impl/pch.hpp"
 #include "DKUtil/Logger.hpp"
 #include "DKUtil/Utility.hpp"
 
-
 #define AsAddress(PTR) std::bit_cast<std::uintptr_t>(PTR)
 #define AsPointer(ADDR) std::bit_cast<void*>(ADDR)
-
 
 #define NO_PATCH   \
 	{              \
@@ -32,7 +29,6 @@ concept dku_h_pod_t =
 template <typename mem_t>
 concept dku_h_addr_t = std::convertible_to<void*, mem_t> || std::convertible_to<std::uintptr_t, mem_t>;
 
-
 namespace DKUtil
 {
 	namespace Alias
@@ -47,7 +43,6 @@ namespace DKUtil
 		using Imm64 = std::uint64_t;
 	}  // namesapce Alias
 
-
 	namespace Hook
 	{
 		using REX = std::uint8_t;
@@ -57,12 +52,10 @@ namespace DKUtil
 		using unpacked_data = std::pair<const void*, std::size_t>;
 		using offset_pair = std::pair<std::ptrdiff_t, std::ptrdiff_t>;
 
-
 		template <typename data_t>
 		concept dku_h_pod_t =
 			std::is_integral_v<data_t> ||
 			(std::is_standard_layout_v<data_t> && std::is_trivial_v<data_t>);
-
 
 		enum class HookFlag : std::uint32_t
 		{
@@ -74,7 +67,6 @@ namespace DKUtil
 			kRestoreBeforeEpilog = 1u << 3,  // apply stolens before epilog
 			kRestoreAfterEpilog = 1u << 4,   // apply stolens after epilog
 		};
-
 
 		struct Patch
 		{
@@ -103,7 +95,6 @@ namespace DKUtil
 #	define TRAM_ALLOC(SIZE) AsAddress((TRAMPOLINE).allocate((SIZE)))
 #	define PAGE_ALLOC(SIZE) SKSE::AllocTrampoline((SIZE))
 
-
 		inline std::uintptr_t IDToAbs([[maybe_unused]] std::uint64_t a_ae, [[maybe_unused]] std::uint64_t a_se, [[maybe_unused]] std::uint64_t a_vr = 0) noexcept
 		{
 			DEBUG("DKU_H: Attempt to load {} address by id {}", IS_AE ? "AE" : IS_VR ? "VR" :
@@ -115,7 +106,6 @@ namespace DKUtil
 
 			return resolved;
 		}
-
 
 		inline offset_pair RuntimeOffset(
 			[[maybe_unused]] const std::ptrdiff_t a_aeLow, [[maybe_unused]] const std::ptrdiff_t a_aeHigh,
@@ -142,7 +132,6 @@ namespace DKUtil
 			}
 		}
 
-
 		inline auto RuntimePatch(
 			[[maybe_unused]] const Xbyak::CodeGenerator* a_ae,
 			[[maybe_unused]] const Xbyak::CodeGenerator* a_se,
@@ -168,7 +157,6 @@ namespace DKUtil
 			}
 		}
 
-
 		inline auto RuntimePatch(
 			[[maybe_unused]] const Patch* a_ae,
 			[[maybe_unused]] const Patch* a_se,
@@ -193,7 +181,6 @@ namespace DKUtil
 				}
 			}
 		}
-
 
 		inline const unpacked_data RuntimePatch(
 			[[maybe_unused]] unpacked_data a_ae,
@@ -221,7 +208,7 @@ namespace DKUtil
 		}
 #elif defined(F4SEAPI)
 #elif defined(PLUGIN_MODE)
-#	define TRAM_ALLOC(SIZE) 
+#	define TRAM_ALLOC(SIZE)
 #endif
 
 		inline std::string_view GetProcessName(HMODULE a_handle = 0) noexcept
@@ -236,7 +223,6 @@ namespace DKUtil
 			return { fileName.c_str(), res };
 		}
 
-
 		inline std::string_view GetProcessPath(HMODULE a_handle = 0) noexcept
 		{
 			static std::string fileName(MAX_PATH + 1, ' ');
@@ -248,7 +234,6 @@ namespace DKUtil
 
 			return { fileName.c_str(), res };
 		}
-
 
 		inline void WriteData(const dku_h_addr_t auto& a_dst, const void* a_data, const std::size_t a_size, bool a_requestAlloc = false) noexcept
 		{
@@ -367,7 +352,6 @@ namespace DKUtil
 
 			return *newDisp;
 		}
-
 
 		class Module
 		{

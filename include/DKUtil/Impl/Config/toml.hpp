@@ -1,11 +1,9 @@
 #pragma once
 
-
 #include "data.hpp"
 
 #define TOML_EXCEPTIONS 0
 #include "toml++/toml.h"
-
 
 namespace DKUtil::Config::detail
 {

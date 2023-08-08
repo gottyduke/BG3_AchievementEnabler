@@ -1,10 +1,8 @@
 #pragma once
 
-
 #include "DKUtil/Impl/pch.hpp"
 #include "DKUtil/Logger.hpp"
 #include "DKUtil/Utility.hpp"
-
 
 namespace DKUtil::Config
 {
@@ -19,7 +17,6 @@ namespace DKUtil::Config
 
 		return std::move(file.string());
 	}
-
 
 	template <bool RECURSIVE = false>
 	inline std::vector<std::string> GetAllFiles(std::string_view a_path = {}, std::string_view a_ext = {}, std::string_view a_prefix = {}, std::string_view a_suffix = {}) noexcept
@@ -72,7 +69,6 @@ namespace DKUtil::Config
 	inline constexpr std::vector<std::string> GetAllFiles(std::string_view a_path = {}, std::string_view a_ext = {}, std::string_view a_prefix = {}, std::string_view a_suffix = {}, const bool a_recursive = false) noexcept { return {}; }
 	// clang-format on
 
-
 	namespace detail
 	{
 		class IData;
@@ -97,7 +93,6 @@ namespace DKUtil::Config
 			[[nodiscard]] constexpr auto& content() const noexcept { return _content; }
 			[[nodiscard]] constexpr std::string_view filename() const noexcept { return _filename; }
 			[[nodiscard]] constexpr std::string_view filepath() const noexcept { return _filepath; }
-
 
 			virtual void Parse(const char* = nullptr) noexcept = 0;
 			virtual void Write(const std::string_view) noexcept = 0;
