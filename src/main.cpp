@@ -67,9 +67,6 @@ BOOL APIENTRY DllMain(HMODULE a_hModule, DWORD a_ul_reason_for_call, LPVOID a_lp
 		dku::Logger::Init(Plugin::NAME, std::to_string(Plugin::Version));
 
 		INFO("game type : {}", dku::Hook::GetProcessName());
-		auto& base = dku::Hook::Module::get();
-		auto [start, size] = base.section(dku::Hook::Module::Section::textx);
-		INFO("module: {:X} textx: {:X} {:X}", base.base(), start, size);
 
 		Patch1_Commit();
 		Patch2_Commit();
