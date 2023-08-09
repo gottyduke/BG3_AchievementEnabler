@@ -4,7 +4,7 @@ using namespace DKUtil::Alias;
 namespace
 {
 	static constexpr auto TestAlByte = dku::Hook::Assembly::make_pattern<"84 C0">();
-	constexpr dku::Hook::OpCode Xor = 0x33;
+	static constexpr dku::Hook::OpCode Xor = 0x33;
 
 	// 4.1.1.3624901
 	void Patch1_Commit()
@@ -18,11 +18,11 @@ namespace
 			"E8 ?? ?? ?? ?? "
 			"48 8B C8 "
 			"E8 ?? ?? ?? ??">();
-		auto* patch = dku::Hook::adjust_pointer(entry, 0x24);
+		auto patch = AsAddress(dku::Hook::adjust_pointer(entry, 0x24));
 
-		if (entry && TestAlByte.match(AsAddress(patch))) {
+		if (entry && TestAlByte.match(patch)) {
 			dku::Hook::WriteImm(patch, Xor);
-			INFO("patch 1 committed : {:X}", AsAddress(patch));
+			INFO("patch 1 committed : {:X}", patch);
 		}
 	}
 
