@@ -4,7 +4,7 @@
 namespace Plugin
 {
 	inline constexpr auto NAME = "@PROJECT_NAME@"sv;
-	inline constexpr auto AUTHOR = "@BGAEPluginAuthor@"sv;
+	inline constexpr auto AUTHOR = "@PluginAuthor@"sv;
 	inline constexpr auto Version = 
 		@PROJECT_VERSION_MAJOR@u * 10000 +
 		@PROJECT_VERSION_MINOR@u * 100 +

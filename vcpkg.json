@@ -4,6 +4,11 @@
     "version-string": "1.0.0",
     "description": "plugin for BG3 to enable achievements in modded stories",
     "dependencies": [
-        "spdlog"
+        "fmt",
+        "spdlog",
+        "nlohmann-json",
+        "simpleini",
+        "tomlplusplus",
+        "xbyak"
     ]
 }

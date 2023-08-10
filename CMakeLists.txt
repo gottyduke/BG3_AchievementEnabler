@@ -48,8 +48,39 @@ source_group(
 	FILES ${CMAKE_CURRENT_BINARY_DIR}/include/Plugin.h
 )
 
+# dependency macros
+macro(find_dependency_path DEPENDENCY FILE)
+	# searches extern for dependencies and if not checks the environment variable
+	if(NOT ${DEPENDENCY} STREQUAL "")
+		# Check extern
+		message(
+			STATUS
+			"Searching for ${DEPENDENCY} using file ${FILE}"
+		)
+		find_path("${DEPENDENCY}Path"
+			${FILE}
+			PATHS "extern/${DEPENDENCY}")
+
+		if("${${DEPENDENCY}Path}" STREQUAL "${DEPENDENCY}Path-NOTFOUND")
+			# Check path
+			message(
+				STATUS
+				"Getting environment for ${DEPENDENCY}Path: $ENV{${DEPENDENCY}Path}"
+			)
+			set("${DEPENDENCY}Path" "$ENV{${DEPENDENCY}Path}")
+		endif()
+
+		message(
+			STATUS
+			"Found ${DEPENDENCY} in ${${DEPENDENCY}Path}; adding"
+		)
+		add_subdirectory("${${DEPENDENCY}Path}" ${DEPENDENCY})
+	endif()
+endmacro()
+
 # dependencies
 find_package(spdlog CONFIG REQUIRED)
+find_dependency_path(DKUtil include/DKUtil/Logger.hpp)
 
 # cmake target
 # runtime
@@ -76,6 +107,7 @@ target_include_directories(
 target_link_libraries(
 	${PROJECT_NAME} 
 	PRIVATE
+		DKUtil::DKUtil
 		spdlog::spdlog
 )
 

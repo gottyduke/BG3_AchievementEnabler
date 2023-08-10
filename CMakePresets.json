@@ -10,7 +10,7 @@
 			"name": "common",
 			"hidden": true,
 			"cacheVariables": {
-				"BGAEPluginAuthor": "$env{SKSEPluginAuthor}"
+				"PluginAuthor": "$env{SKSEPluginAuthor}"
 			}
 		},
 		{
