@@ -76,28 +76,49 @@ namespace Patches
 					  "84 C0">(),
 					0x4A, 0x33 },
 				/**/
+
+				// signature:
+				// 48 89 5C 24 08 8B 59 14 45 33 DB 48 85 DB
 				{ dku::Hook::Assembly::search_pattern<
-					  "48 89 5C 24 08 "
-					  "8B 59 14 "
-					  "45 33 DB "
-					  "48 85 DB "
-					  "74 ?? "
-					  "4C 8B 51 08 "
-					  "8B 0D ?? ?? ?? ?? "
-					  "8B 05 ?? ?? ?? ?? "
-					  "8B 15 ?? ?? ?? ??">(),
+					  "48 89 5C 24 08 "       // mov     [rsp+arg_0], rbx
+					  "8B 59 14 "             // mov     ebx, [rcx+14h]
+					  "45 33 DB "             // xor     r11d, r11d
+					  "48 85 DB "             // test    rbx, rbx
+					  "74 ?? "                // jz      short loc_143280CE3 [ => to patch, jz => jmp ]
+					  "4C 8B 51 08 "          // mov     r10, [rcx+8]
+					  "8B 0D ?? ?? ?? ?? "    // mov     ecx, cs:dword_145A38228
+					  "8B 05 ?? ?? ?? ?? "    // mov     eax, cs:dword_145A38190
+					  "8B 15 ?? ?? ?? ??">(), // mov     edx, cs:dword_145A3831C
 					0xE, &Jmp },
+
+				// search:
+				// 4C 8D 45 E0 48 8B D6 49 8B CC 83 78 0C 00
 				{ dku::Hook::Assembly::search_pattern<
-					  "48 8D 4D 10 "
-					  "E8 ?? ?? ?? ?? "
-					  "4C 8D 45 E0 "
-					  "48 8B D6 "
-					  "49 8B CC "
-					  "83 78 0C 00 "
-					  "0F 85 ?? ?? ?? ?? "
-					  "E8 ?? ?? ?? ?? "
-					  "84 C0">(),
+					  "48 8D 4D 10 "       // lea     rcx, [rbp+3A0h+var_390]
+					  "E8 ?? ?? ?? ?? "    // call    sub_1424EAE00
+					  "4C 8D 45 E0 "       // lea     r8, [rbp+3A0h+Src]
+					  "48 8B D6 "          // mov     rdx,rsi
+					  "49 8B CC "          // mov     rcx,r12
+					  "83 78 0C 00 "       // cmp     dword ptr [rax+0Ch], 0
+					  "0F 85 ?? ?? ?? ?? " // jnz     __skip0 [ => to patch, nop6 ]
+					  "E8 ?? ?? ?? ?? "    // call    sub_1410839E0
+					  "84 C0">(),          // test    al,al
 					0x17, &Nop6 },
+
+				// new version (patch 4)
+				// search:
+				// 4C 8D 45 B0 48 8B D6 49 8B CF 83 BD CC 01 00 00 00
+				{ dku::Hook::Assembly::search_pattern<
+					  "E8 ?? ?? ?? ?? "         // call    sub_141A30C90
+					  "E9 ?? ?? ?? ?? "         // jmp     loc_141AD532C
+					  "4C 8D 45 B0 "            // lea     r8, [rbp+370h+Src]
+					  "48 8B D6 "               // mov     rdx, rsi
+					  "49 8B CF "               // mov     rcx, r15
+					  "83 BD CC 01 00 00 00 "   // cmp     [rbp+370h+var_1A4], 0
+					  "0F 85 ?? ?? ?? ?? "      // jnz     __skip0 [ => to patch, nop6 ]
+					  "E8 ?? ?? ?? ?? "         // call    sub_141F9FA80
+					  "84 C0">(),               // test    al, al
+					0x1b, &Nop6 },
 			};
 
 			auto files = dku::Config::GetAllFiles<false>({}, ".dll");
