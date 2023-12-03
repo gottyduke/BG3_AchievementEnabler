@@ -7,7 +7,7 @@ namespace Patches
 {
 	using patch_entry = std::tuple<void*, std::ptrdiff_t, const Patch*>;
 
-	// 4.1.1.3648072
+	// 4.1.1.4079877
 	namespace IsAddonLoaded
 	{
 		constexpr Patch Jmp{
@@ -23,81 +23,31 @@ namespace Patches
 		void Commit()
 		{
 			patch_entry Patches[] = {
-				/**
 				{ dku::Hook::Assembly::search_pattern<
-					  "40 57 "
-					  "48 83 EC 30 "
-					  "48 8B 0D ?? ?? ?? ?? "
-					  "48 8B FA "
-					  "48 81 C1 D0 00 00 00 "
-					  "E8 ?? ?? ?? ?? "
-					  "48 8B C8 "
-					  "E8 ?? ?? ?? ?? "
-					  "84 C0">(),
-					0x24, 0x33 },
+                      "48 89 5C 24 08 "       //mov     [rsp+8], rbx
+                      "48 89 7C 24 10 "       //mov     [rsp+10h], rdi
+                      "8B 79 14 "             //mov     edi, [rcx+14h]
+                      "33 DB "                //xor     ebx, ebx
+                      "48 85 FF "             //test    rdi, rdi
+                      "74 ?? "                //jz      short loc_1431B3680 [ => to patch, jz => jmp ]
+                      "4C 8B 59 08 "          //mov     r11, [rcx+8]
+                      "8B 0D ?? ?? ?? ?? "    //mov     ecx, cs:dword_145725CD8
+                      "8B 05 ?? ?? ?? ?? "    //mov     eax, cs:dword_145725C3C
+                      "8B 15 ?? ?? ?? ??">(), //mov     edx, cs:dword_145725DCC
+					0x12, &Jmp },
+
+				// new version (patch 5)
 				{ dku::Hook::Assembly::search_pattern<
-					  "40 53 "
-					  "56 "
-					  "57 "
-					  "48 81 EC D0 04 00 00 "
-					  "48 8B 05 ?? ?? ?? ?? "
-					  "48 33 C4 "
-					  "48 89 84 24 C0 04 00 00 "
-					  "48 8B D9 "
-					  "49 8B F8 "
-					  "48 8B 0D ?? ?? ?? ?? "
-					  "48 8B F2 "
-					  "48 81 C1 D0 00 00 00 "
-					  "E8 ?? ?? ?? ?? "
-					  "48 8B C8 "
-					  "E8 ?? ?? ?? ?? "
-					  "84 C0">(),
-					0x41, 0x33 },
-				{ dku::Hook::Assembly::search_pattern<
-					  "40 53 "
-					  "55 "
-					  "56 "
-					  "57 "
-					  "41 56 "
-					  "41 57 "
-					  "48 81 EC ?? ?? ?? ?? "
-					  "48 8B 05 ?? ?? ?? ?? "
-					  "48 33 C4 "
-					  "48 89 84 24 ?? ?? ?? ?? "
-					  "48 8B D9 "
-					  "45 0F B7 F9 "
-					  "48 8B 0D ?? ?? ?? ?? "
-					  "49 8B F8 "
-					  "48 81 C1 ?? ?? ?? ?? "
-					  "48 8B EA "
-					  "E8 ?? ?? ?? ?? "
-					  "48 8B C8 "
-					  "E8 ?? ?? ?? ?? "
-					  "84 C0">(),
-					0x4A, 0x33 },
-				/**/
-				{ dku::Hook::Assembly::search_pattern<
-					  "48 89 5C 24 08 "
-					  "8B 59 14 "
-					  "45 33 DB "
-					  "48 85 DB "
-					  "74 ?? "
-					  "4C 8B 51 08 "
-					  "8B 0D ?? ?? ?? ?? "
-					  "8B 05 ?? ?? ?? ?? "
-					  "8B 15 ?? ?? ?? ??">(),
-					0xE, &Jmp },
-				{ dku::Hook::Assembly::search_pattern<
-					  "48 8D 4D 10 "
-					  "E8 ?? ?? ?? ?? "
-					  "4C 8D 45 E0 "
-					  "48 8B D6 "
-					  "49 8B CC "
-					  "83 78 0C 00 "
-					  "0F 85 ?? ?? ?? ?? "
-					  "E8 ?? ?? ?? ?? "
-					  "84 C0">(),
-					0x17, &Nop6 },
+                      "E8 ?? ?? ?? ?? "         // call    sub_1419374B0
+                      "E9 ?? ?? ?? ?? "         // jmp     loc_1419DCF8E
+                      "4C 8D 45 B0 "            // lea     r8, [rbp-50h]
+                      "49 8B D6 "               // mov     rdx, r14
+                      "49 8B CC "               // mov     rcx, r12
+                      "83 BD CC 01 00 00 00 "   // cmp     dword ptr [rbp+1CCh], 0
+                      "0F 85 ?? ?? ?? ?? "      // jnz     loc_1419DCD8B [ => to patch, nop6 ]
+                      "E8 ?? ?? ?? ?? "         // call    sub_141EAC3F0
+                      "84 C0">(),               // test    al, al
+					0x1b, &Nop6 },
 			};
 
 			auto files = dku::Config::GetAllFiles<false>({}, ".dll");
@@ -137,12 +87,6 @@ namespace Patches
 			void* a_allocator,
 			bool a_flag)
 		{
-			/**
-			auto* widget = _LoadFromFile(a_uiManager, a_unk2, a_xaml, a_request, a_allocator, a_flag);
-			WidgetMemoryMap[a_request->file.string_view()] = widget;
-			return widget;
-			/**/
-
 			return _LoadFromFile(a_uiManager, a_unk2, a_xaml, a_request, a_allocator, a_flag);
 		}
 
@@ -156,41 +100,6 @@ namespace Patches
 
 		static void Commit()
 		{
-			/**
-			// reloc retn for CreateWidget
-			auto* addr = dku::Hook::Assembly::search_pattern<
-				"90 "
-				"48 85 DB "
-				"74 ?? "
-				"48 8D 4B 18 "
-				"48 8B 01 "
-				"FF 50 20 "
-				"90 "
-				"EB ?? "
-				"49 8D 4F 30 "
-				"4C 8B C6 "
-				"49 8B D6 "
-				"E8 ?? ?? ?? ?? "
-				"48 81 C4 88 00 00 00 "
-				"41 5F "
-				"41 5E "
-				"41 5D "
-				"41 5C "
-				"5F "
-				"5E "
-				"5B "
-				"5D "
-				"C3">();  // +313DB99
-			if (!addr) {
-				// safe to fail
-				WARN("CreateWidgetRetn cannot be found!");
-			} else {
-				const auto createWidgetRetn = AsAddress(addr) + 0x35;
-				dku::Hook::WriteImm(createWidgetRetn, RelocPointer);
-				INFO("CreateWidgetRetn installed at {:X}", createWidgetRetn);
-			}
-			/**/
-
 			// CreateWidget callsite
 			auto* addr = dku::Hook::Assembly::search_pattern<
 				"48 8B CF "
@@ -240,7 +149,6 @@ BOOL APIENTRY DllMain(HMODULE a_hModule, DWORD a_ul_reason_for_call, LPVOID a_lp
 
 		dku::Hook::Trampoline::AllocTrampoline(1 << 5);
 		Patches::IsAddonLoaded::Commit();
-		//Patches::UiWidgetCreator::Commit();
 	}
 
 	return TRUE;
