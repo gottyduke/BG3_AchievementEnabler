@@ -147,7 +147,7 @@ BOOL APIENTRY DllMain(HMODULE a_hModule, DWORD a_ul_reason_for_call, LPVOID a_lp
 
 		INFO("game type : {}", dku::Hook::GetProcessName());
 
-		dku::Hook::Trampoline::AllocTrampoline(1 << 5);
+		dku::Hook::Trampoline::AllocTrampoline(1 << 6);
 		Patches::IsAddonLoaded::Commit();
 	}
 
