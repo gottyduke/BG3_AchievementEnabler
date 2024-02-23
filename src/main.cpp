@@ -36,18 +36,30 @@ namespace Patches
                       "8B 15 ?? ?? ?? ??">(), //mov     edx, cs:dword_145725DCC
 					0x12, &Jmp },
 
-				// new version (patch 5)
+				// // new version (patch 5)
+				// { dku::Hook::Assembly::search_pattern<
+                //       "E8 ?? ?? ?? ?? "         // call    sub_1419374B0
+                //       "E9 ?? ?? ?? ?? "         // jmp     loc_1419DCF8E
+                //       "4C 8D 45 B0 "            // lea     r8, [rbp-50h]
+                //       "49 8B D6 "               // mov     rdx, r14
+                //       "49 8B CC "               // mov     rcx, r12
+                //       "83 BD CC 01 00 00 00 "   // cmp     dword ptr [rbp+1CCh], 0
+                //       "0F 85 ?? ?? ?? ?? "      // jnz     loc_1419DCD8B [ => to patch, nop6 ]
+                //       "E8 ?? ?? ?? ?? "         // call    sub_141EAC3F0
+                //       "84 C0">(),               // test    al, al
+				// 	0x1b, &Nop6 },
+				// 00000001419E5F22
 				{ dku::Hook::Assembly::search_pattern<
-                      "E8 ?? ?? ?? ?? "         // call    sub_1419374B0
-                      "E9 ?? ?? ?? ?? "         // jmp     loc_1419DCF8E
-                      "4C 8D 45 B0 "            // lea     r8, [rbp-50h]
-                      "49 8B D6 "               // mov     rdx, r14
-                      "49 8B CC "               // mov     rcx, r12
-                      "83 BD CC 01 00 00 00 "   // cmp     dword ptr [rbp+1CCh], 0
-                      "0F 85 ?? ?? ?? ?? "      // jnz     loc_1419DCD8B [ => to patch, nop6 ]
-                      "E8 ?? ?? ?? ?? "         // call    sub_141EAC3F0
-                      "84 C0">(),               // test    al, al
-					0x1b, &Nop6 },
+						"48 8D 4D 10 "       // lea     rcx, [rbp+10h]
+						"E8 ?? ?? ?? ?? "    // call    sub_141009E80
+						"4C 8D 45 E0 "       // lea     r8, [rbp-20h]
+						"48 8B D6 "          // mov     rdx, rsi
+						"49 8B CC "          // mov     rcx, r12
+						"83 78 0C 00 "       // cmp     dword ptr [rax+0Ch], 0
+						"0F 85 ?? ?? ?? ?? " // jnz     loc_1419E604F [ => to patch, nop6 ]
+						"E8 ?? ?? ?? ?? "    // call    sub_141B39870
+						"84 C0">(),          // test    al, al
+					0x17, &Nop6 },
 			};
 
 			auto files = dku::Config::GetAllFiles<false>({}, ".dll");
