@@ -7,22 +7,18 @@ namespace Patches
 {
 	using patch_entry = std::tuple<void*, std::ptrdiff_t, const Patch*>;
 
-	// 4.1.1.4079877
+	// 4.1.1.6897358
 	namespace IsAddonLoaded
 	{
-		constexpr Patch Jmp{
-			"\xEB",
-			1
-		};
-
-		constexpr Patch Nop6{
-			"\x90\x90\x90\x90\x90\x90",
-			6
+		constexpr Patch Nop2 {
+			"\x90\x90",
+			2
 		};
 
 		void Commit()
 		{
 			patch_entry Patches[] = {
+				/**
 				{ dku::Hook::Assembly::search_pattern<
                       "48 89 5C 24 08 "       //mov     [rsp+8], rbx
                       "48 89 7C 24 10 "       //mov     [rsp+10h], rdi
@@ -38,24 +34,35 @@ namespace Patches
 
 				// new version (patch 5)
 				{ dku::Hook::Assembly::search_pattern<
-                      "E8 ?? ?? ?? ?? "         // call    sub_1419374B0
-                      "E9 ?? ?? ?? ?? "         // jmp     loc_1419DCF8E
-                      "4C 8D 45 B0 "            // lea     r8, [rbp-50h]
-                      "49 8B D6 "               // mov     rdx, r14
-                      "49 8B CC "               // mov     rcx, r12
-                      "83 BD CC 01 00 00 00 "   // cmp     dword ptr [rbp+1CCh], 0
-                      "0F 85 ?? ?? ?? ?? "      // jnz     loc_1419DCD8B [ => to patch, nop6 ]
-                      "E8 ?? ?? ?? ?? "         // call    sub_141EAC3F0
-                      "84 C0">(),               // test    al, al
+					  "E8 ?? ?? ?? ?? "        // call    sub_1419374B0
+					  "E9 ?? ?? ?? ?? "        // jmp     loc_1419DCF8E
+					  "4C 8D 45 B0 "           // lea     r8, [rbp-50h]
+					  "49 8B D6 "              // mov     rdx, r14
+					  "49 8B CC "              // mov     rcx, r12
+					  "83 BD CC 01 00 00 00 "  // cmp     dword ptr [rbp+1CCh], 0
+					  "0F 85 ?? ?? ?? ?? "     // jnz     loc_1419DCD8B [ => to patch, nop6 ]
+					  "E8 ?? ?? ?? ?? "        // call    sub_141EAC3F0
+					  "84 C0">(),              // test    al, al
 					0x1b, &Nop6 },
+				/**/
+				// patch 8
+				{ dku::Hook::Assembly::search_pattern<
+						"E8 ?? ?? ?? ?? "		// call    sub_144167B00
+						"90 "					// nop
+						"40 84 FF "				// test    dil, dil
+						"75 10 "				// jne     short loc_143BA8A05
+						"48 FF C6 "				// inc     rsi
+						"49 83 C6 78 "			// add     r14, 78h
+						"48 3B F5 "				// cmp     rsi, rbp
+						"0F 82 ?? ?? ?? ??">(),	// jb      loc_143BA8860 [ => to patch, jne => nop ]
+					0x9, &Nop2 },
 			};
 
 			auto files = dku::Config::GetAllFiles<false>({}, ".dll");
-			auto win = true;
 			for (auto& file : files) {
 				if (dku::string::iends_with(file, "dwrite.dll")) {
 					WARN("bg3se installed, disabled self");
-					win = false;
+					return;
 				}
 			}
 
@@ -63,74 +70,16 @@ namespace Patches
 				auto& [entry, offset, patch] = Patches[i];
 
 				if (entry) {
+					INFO("{:X}", AsAddress(entry));
 					auto addr = AsAddress(dku::Hook::adjust_pointer(entry, offset));
-
-					if (win) {
-						dku::Hook::WritePatch(addr, patch);
-						INFO("IsAddonLoaded patch {} installed at {:X}", i + 1, addr);
-					}
+					dku::Hook::WritePatch(addr, patch);
+					INFO("IsAddonLoaded patch {} installed at {:X}", i + 1, addr);
 				} else {
 					WARN("IsAddonLoaded patch {} cannot be found", i + 1);
 				}
 			}
 		}
 	}  // namespace IsAddonLoaded
-
-	class UiWidgetCreator
-	{
-		// game loads widget from "Widgets\\" folder
-		static void Hook_CreateWidget(
-			void* a_uiManager,
-			void* a_unk2,
-			const char** a_xaml,  // heap
-			RE::Noesis::XamlLoadRequest* a_request,
-			void* a_allocator,
-			bool a_flag)
-		{
-			return _LoadFromFile(a_uiManager, a_unk2, a_xaml, a_request, a_allocator, a_flag);
-		}
-
-		static inline std::add_pointer_t<decltype(Hook_CreateWidget)> _LoadFromFile{ nullptr };
-
-	public:
-		static constexpr OpCode RelocPointer[4]{
-			0x48, 0x89, 0xC8,  // mov rax, rcx
-			0xC3               // retn
-		};
-
-		static void Commit()
-		{
-			// CreateWidget callsite
-			auto* addr = dku::Hook::Assembly::search_pattern<
-				"48 8B CF "
-				"E8 ?? ?? ?? ?? "
-				"90 "
-				"83 7D 74 10 "
-				"72 ?? "
-				"48 8B 4D 60 "
-				"E8 ?? ?? ?? ?? "
-				"90 "
-				"EB ?? "
-				"0F B6 85 20 05 00 00 "
-				"88 44 24 28 "
-				"48 89 7C 24 20 "
-				"4D 8B CE "
-				"4C 8D 45 E8 "
-				"48 8B D3 "
-				"49 8B CD "
-				"E8 ?? ?? ?? ??">();  // +313E0E2
-			if (!addr) {
-				// safe to fail
-				WARN("CreateWidgetHook cannot be found!");
-			} else {
-				const auto callsite = AsAddress(addr) + 0x38;
-				_LoadFromFile = dku::Hook::write_call<5>(callsite, Hook_CreateWidget);
-				INFO("CreateWidgetHook installed at {:X}", callsite);
-			}
-		}
-
-		static inline std::unordered_map<std::string_view, RE::ls::UIWidget*> WidgetMemoryMap;
-	};
 }  // namespace Patches
 
 BOOL APIENTRY DllMain(HMODULE a_hModule, DWORD a_ul_reason_for_call, LPVOID a_lpReserved)
@@ -145,7 +94,7 @@ BOOL APIENTRY DllMain(HMODULE a_hModule, DWORD a_ul_reason_for_call, LPVOID a_lp
 		// stuff
 		dku::Logger::Init(Plugin::NAME, std::to_string(Plugin::Version));
 
-		INFO("game type : {}", dku::Hook::GetProcessName());
+		INFO("game type : {}", dku::Hook::GetProcessName(::GetCurrentProcessId()));
 
 		dku::Hook::Trampoline::AllocTrampoline(1 << 5);
 		Patches::IsAddonLoaded::Commit();

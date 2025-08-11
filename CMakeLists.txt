@@ -120,6 +120,7 @@ if (MSVC)
 		PRIVATE
 			/MP
 			/await
+			/utf-8
 			/W0
 			/WX
 			/permissive-
